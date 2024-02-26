@@ -23,7 +23,7 @@ public class WebSecurityConfig {
                         // 모두 허용
                         .requestMatchers(
                                 "/no-auth",
-                                "home"
+                                "users/home"
                         )
                         .permitAll()
 
@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                         // 인증 필요
                         .requestMatchers(
                                 "/users/my-profile",
-                                "users/logout"
+                                "/users/logout"
                         ).authenticated()  // 인증이 필요하다 설정
                 )
                 // 로그인 설정
@@ -53,12 +53,12 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
+//    @Bean
     public UserDetailsManager userDetailsManager(
             PasswordEncoder passwordEncoder) {
-        // 테스트 사용자 "user1", "password1"
-        UserDetails user1 = User.withUsername("user1")
-                .password(passwordEncoder.encode("password1"))
+        // 기본용 사용자 "user", "password"
+        UserDetails user1 = User.withUsername("user")
+                .password(passwordEncoder.encode("password"))
                 .build();
         return new InMemoryUserDetailsManager(user1);
     }

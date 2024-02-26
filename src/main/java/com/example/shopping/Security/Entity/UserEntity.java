@@ -1,24 +1,33 @@
-package com.example.shopping.Security.dto;
+package com.example.shopping.Security.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class User {
+@Getter
+@Table(name = "user table")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String username;    // name
+
+    @Column(nullable = false)
     private String password;    // password
 
     private String nickname;    // 1. 닉네임
     private String name;        // 2. 이름
     private Integer age;        // 3. 나이
     private String email;       // 4. 이메일
-    private Integer phone;      // 5. 전화번호
+    private String phone;      // 5. 전화번호
+
 //    private MultipartFile profileImage; // 프로필 이미지 업로드용
 }

@@ -1,17 +1,12 @@
 package com.example.shopping.Security.Controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 public class TestController {
-    @GetMapping("/home")
-    public String home() {
-        log.info(SecurityContextHolder.getContext().getAuthentication().getName());
-        return "index";
-    }
+
     // hello 뜨는지 확인
     @GetMapping
     public String root(){

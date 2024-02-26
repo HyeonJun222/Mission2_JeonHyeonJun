@@ -18,6 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
+    // HOME index
+    @GetMapping("/home")
+    public String home() {
+        // 홈 화면에서 누가 로그인했는지 볼 수 있음.
+        // 로그인 안했으면 annoymousUser 로 표기됨
+        // 로그인 했으면 유저 이름 표기
+        log.info(SecurityContextHolder.getContext().getAuthentication().getName());
+        return "index";
+    }
+
     @GetMapping("/login")
     public String loginForm() {
         return "login-form";
@@ -55,8 +65,7 @@ public class UserController {
                     .build());
 
         // 회원가입 성공 후 로그인 페이지로
-        return "redirect:/users/login"
-                ;
+        return "redirect:/users/login";
     }
 
 
