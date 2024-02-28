@@ -1,5 +1,6 @@
 package com.example.shopping.Security.Service;
 
+import com.example.shopping.Security.Entity.CustomUserDetails;
 import com.example.shopping.Security.Repository.UserRepository;
 import com.example.shopping.Security.Entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,11 @@ import java.util.Optional;
 @Service
 public class JpaUserDetailsManager implements UserDetailsManager {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public JpaUserDetailsManager(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         createUser(User.withUsername("user")
                 .password(passwordEncoder.encode("password"))
                 .build());
@@ -30,14 +33,31 @@ public class JpaUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-        if (this.userExists(user.getUsername())) {
+        if (userExists(user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        UserEntity userEntity = UserEntity.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .build();
-        userRepository.save(userEntity);
+        try{
+            CustomUserDetails userDetails =
+                    (CustomUserDetails) user;
+            UserEntity newUser = UserEntity.builder()
+                    .username(userDetails.getUsername())
+                    .password(passwordEncoder.encode(userDetails.getPassword()))
+                    .nickname(userDetails.getNickname())
+                    .name(userDetails.getName())
+                    .age(userDetails.getAge())
+                    .email(userDetails.getEmail())
+                    .phone(userDetails.getPhone())
+                    .build();
+            userRepository.save(newUser);
+        }catch (ClassCastException e){
+            log.error("Failed Cast to: {}", CustomUserDetails.class);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+//        UserEntity userEntity = UserEntity.builder()
+//                .username(user.getUsername())
+//                .password(user.getPassword())
+//                .build();
+//        userRepository.save(userEntity);
     }
 
     @Override
@@ -66,8 +86,16 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException(username);
-        return User.withUsername(username)
-                .password(optionalUser.get().getPassword())
+
+        // CustomUserDetails 객체 생성하여 반환
+        UserEntity userEntity = optionalUser.get();
+        return CustomUserDetails.builder()
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .nickname(userEntity.getNickname())
+                .name(userEntity.getName())
+                .age(userEntity.getAge())
+                .phone(userEntity.getPhone())
                 .build();
     }
 }

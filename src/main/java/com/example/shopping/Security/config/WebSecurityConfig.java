@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +24,8 @@ public class WebSecurityConfig {
                         // 모두 허용
                         .requestMatchers(
                                 "/no-auth",
-                                "users/home"
+                                "users/home",
+                                "/tests"
                         )
                         .permitAll()
 
@@ -39,6 +41,13 @@ public class WebSecurityConfig {
                                 "/users/my-profile",
                                 "/users/logout"
                         ).authenticated()  // 인증이 필요하다 설정
+                )
+                // 토큰설정
+                .sessionManagement(
+                        sessionManagement -> sessionManagement
+                                .sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS
+                                )
                 )
                 // 로그인 설정
                 .formLogin(formLogin -> formLogin

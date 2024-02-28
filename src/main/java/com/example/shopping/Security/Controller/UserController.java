@@ -1,5 +1,6 @@
 package com.example.shopping.Security.Controller;
 
+import com.example.shopping.Security.Entity.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -38,7 +39,9 @@ public class UserController {
     public String myProfile(Authentication authentication) {
         // 누가 접속했는지 알기가 어려워서 추가하는 로그
         log.info(authentication.getName());
-        log.info(((User) authentication.getPrincipal()).getUsername());
+//        log.info(((User) authentication.getPrincipal()).getUsername());
+        // 이런식으로 데이터를 찍어볼 수 있기 때문에 해 주는 것
+        log.info(((CustomUserDetails) authentication.getPrincipal()).getUsername());
         return "my-profile";
     }
     
@@ -60,10 +63,13 @@ public class UserController {
     ) {
         // 회원가입
         if (password.equals(passwordCheck))
-            manager.createUser(User.withUsername(username)
-                    .password(passwordEncoder.encode(password))
+//            manager.createUser(User.withUsername(username)
+//                    .password(passwordEncoder.encode(password))
+//                    .build());
+            manager.createUser(CustomUserDetails.builder()
+                            .username(username)
+                            .password(passwordEncoder.encode(password))
                     .build());
-
         // 회원가입 성공 후 로그인 페이지로
         return "redirect:/users/login";
     }
