@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                         // 모두 허용
                         .requestMatchers(
                                 "/no-auth",
-                                "users/home",
+                                "/users/home",
                                 "/tests"
                         )
                         .permitAll()

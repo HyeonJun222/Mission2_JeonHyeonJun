@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
@@ -16,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
-@RequestMapping("users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     // HOME index
     @GetMapping("/home")
     public String home() {
         // 홈 화면에서 누가 로그인했는지 볼 수 있음.
-        // 로그인 안했으면 annoymousUser 로 표기됨
+        // 로그인 안했으면 anonymousUser 로 표기됨
         // 로그인 했으면 유저 이름 표기
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
         return "index";

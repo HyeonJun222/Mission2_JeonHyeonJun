@@ -25,44 +25,52 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     public JpaUserDetailsManager(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        createUser(User.withUsername("user")
+        createUser(CustomUserDetails.builder()
+                .username("user")
                 .password(passwordEncoder.encode("password"))
+                .role("role_user")
                 .build());
     }
 
 
     @Override
     public void createUser(UserDetails user) {
-        if (userExists(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         try{
-            CustomUserDetails userDetails =
-                    (CustomUserDetails) user;
-            UserEntity newUser = UserEntity.builder()
-                    .username(userDetails.getUsername())
-                    .password(passwordEncoder.encode(userDetails.getPassword()))
-                    .nickname(userDetails.getNickname())
-                    .name(userDetails.getName())
-                    .age(userDetails.getAge())
-                    .email(userDetails.getEmail())
-                    .phone(userDetails.getPhone())
-                    .build();
+            // CustomUserDetails 로 수정
+            CustomUserDetails userDetails = (CustomUserDetails) user;
+            UserEntity newUser = UserEntity.fromEntity(userDetails);
             userRepository.save(newUser);
+            /*
+//            UserEntity newUser = UserEntity.builder()
+//                    .username(userDetails.getUsername())
+//                    .password(passwordEncoder.encode(userDetails.getPassword()))
+//                    .nickname(userDetails.getNickname())
+//                    .name(userDetails.getName())
+//                    .age(userDetails.getAge())
+//                    .email(userDetails.getEmail())
+//                    .phone(userDetails.getPhone())
+//                    .build();
+//            userRepository.save(newUser);
+*/
         }catch (ClassCastException e){
             log.error("Failed Cast to: {}", CustomUserDetails.class);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-//        UserEntity userEntity = UserEntity.builder()
-//                .username(user.getUsername())
-//                .password(user.getPassword())
-//                .build();
-//        userRepository.save(userEntity);
     }
 
     @Override
     public void updateUser(UserDetails user) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            CustomUserDetails userDetails = (CustomUserDetails) user;
+            UserEntity userEntity = UserEntity.fromEntity(userDetails);
+            userRepository.save(userEntity);
+        }catch (ClassCastException e){
+            log.error("Failed Cast to: {}", CustomUserDetails.class);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

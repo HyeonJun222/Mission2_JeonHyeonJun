@@ -15,7 +15,7 @@ public class BusinessEntity {
 
     @Setter
     @OneToOne
-    private UserEntity userEntity;
+    private UserEntity user;
 
     @Setter
     private String business;
