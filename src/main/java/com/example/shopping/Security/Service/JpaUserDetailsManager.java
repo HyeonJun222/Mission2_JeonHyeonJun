@@ -5,7 +5,6 @@ import com.example.shopping.Security.Repository.UserRepository;
 import com.example.shopping.Security.Entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,6 +1,9 @@
 package com.example.shopping.Security.Controller;
 
+import com.example.shopping.Jwt.JwtResponseDto;
 import com.example.shopping.Security.Entity.CustomUserDetails;
+import com.example.shopping.Security.Service.UserService;
+import com.example.shopping.dto.CurrentDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -8,16 +11,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
     // HOME index
     @GetMapping("/home")
     public String home() {
@@ -27,11 +28,18 @@ public class UserController {
         log.info(SecurityContextHolder.getContext().getAuthentication().getName());
         return "index";
     }
-
     @GetMapping("/login")
     public String loginForm() {
         return "login-form";
     }
+
+//    @GetMapping("/login")
+//    public JwtResponseDto loginForm(
+//            @RequestBody CurrentDto dto
+//    ) {
+////        return "login-form";
+//        return userService.currentUser(dto);
+//    }
     
     // 로그인 화면
     @GetMapping("/my-profile")
